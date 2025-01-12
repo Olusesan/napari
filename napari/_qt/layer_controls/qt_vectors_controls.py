@@ -92,7 +92,7 @@ class QtVectorsControls(QtLayerControls):
         self.edgeColorEdit = QColorSwatchEdit(
             initial_color=self.layer.edge_color,
             tooltip=trans._(
-                'click to set current edge color',
+                'Click to set current edge color',
             ),
         )
         self.edgeColorEdit.color_changed.connect(self.change_edge_color_direct)
@@ -125,7 +125,7 @@ class QtVectorsControls(QtLayerControls):
         self.widthSpinBox = QDoubleSpinBox()
         self.widthSpinBox.setKeyboardTracking(False)
         self.widthSpinBox.setSingleStep(0.1)
-        self.widthSpinBox.setMinimum(0.1)
+        self.widthSpinBox.setMinimum(0.01)
         self.widthSpinBox.setMaximum(np.inf)
         self.widthSpinBox.setValue(self.layer.edge_width)
         self.widthSpinBox.valueChanged.connect(self.change_width)
@@ -147,9 +147,9 @@ class QtVectorsControls(QtLayerControls):
 
         self.layout().addRow(self.button_grid)
         self.layout().addRow(self.opacityLabel, self.opacitySlider)
+        self.layout().addRow(trans._('blending:'), self.blendComboBox)
         self.layout().addRow(trans._('width:'), self.widthSpinBox)
         self.layout().addRow(trans._('length:'), self.lengthSpinBox)
-        self.layout().addRow(trans._('blending:'), self.blendComboBox)
         self.layout().addRow(
             trans._('vector style:'), self.vector_style_comboBox
         )
