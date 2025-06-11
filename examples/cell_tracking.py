@@ -10,28 +10,29 @@ Disease Research (CIID), University Hospital Heidelberg, Germany for the data.
 You can find the data on: https://doi.org/10.5281/zenodo.15597019
 
 """
-import glob
-import os
 import zipfile
+from pathlib import Path
 
 import pooch
 
 import napari
+import napari.viewer
 
 ###############################################################################
 # Download the data
 # ------------------
 download = pooch.DOIDownloader(progressbar=True)
-doi = "10.5281/zenodo.15597019"
-tmp_dir = pooch.os_cache('napari-cell-tracking-example')
-os.makedirs(tmp_dir, exist_ok=True)
+doi = "10.5281/zenodo.15597019/01.zip"
+tmp_dir = Path(pooch.os_cache('napari-cell-tracking-example'))
+#os.makedirs(tmp_dir, exist_ok=True)
+tmp_dir.mkdir(parents=True, exist_ok=True)
 
-data_files = "01.zip"
+#data_files = "01.zip"
 
-data_path = tmp_dir/data_files
+data_path = tmp_dir/"01.zip"
 
 if not data_path.exists():
-    print(f"downloading archive {data_files}")
+    print(f"downloading archive {data_path.name}")
     #download(f"doi:{doi}", output_file=data_path, path=data_files)
     download(f"doi:{doi}", output_file=data_path, pooch=None)
 else:
@@ -40,13 +41,17 @@ else:
 with zipfile.ZipFile(data_path, 'r') as zip_ref:
     zip_ref.extractall(tmp_dir)
 
-imgs = glob.glob(os.path.join(tmp_dir, "*.tif"))
+print("Contents of tmp_dir after extraction:")
+for p in tmp_dir.rglob("*"):
+    print(p)
+
+#imgs = glob.glob(os.path.join(tmp_dir, "*.tif"))
+imgs = list((tmp_dir/"01").glob ("*.tif"))
 
 if not imgs:
-    raise FileNotFoundError("no tiff files found")
+    raise FileNotFoundError("no tif files found")
 
 viewer = napari.Viewer()
-
 viewer.add_image(imgs, name='Cell Tracking', colormap='gray',
                  metadata={'Unit': 'Hours'})
 
