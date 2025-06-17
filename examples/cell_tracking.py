@@ -13,7 +13,9 @@ You can find the data on: https://doi.org/10.5281/zenodo.15597019
 import zipfile
 from pathlib import Path
 
+import numpy as np
 import pooch
+import tifffile
 
 import napari
 import napari.viewer
@@ -51,8 +53,11 @@ imgs = list((tmp_dir/"01").glob ("*.tif"))
 if not imgs:
     raise FileNotFoundError("no tif files found")
 
+images = np.stack([
+        tifffile.imread(fn) for fn in sorted(imgs)
+        ])
 viewer = napari.Viewer()
-viewer.add_image(imgs, name='Cell Tracking', colormap='gray',
+viewer.add_image(images, name='Cell Tracking', colormap='gray',
                  metadata={'Unit': 'Hours'})
 
 napari.run()
